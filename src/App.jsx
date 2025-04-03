@@ -1,22 +1,44 @@
-import FriendList from './components/FriendList/FriendList';
-import Profile from './components/Profile/Profile';
-import userData from './assets/userData.json';
-import friends from './assets/friends.json';
-import TransactionHistory from './components/TransactionHistory/TransactionHistory';
-import transactions from './assets/transactions.json';
+import ContactForm from './components/ContactForm/ContactForm ';
+import SearchBox from './components/SearchBox/SearchBox';
+import ContactList from './components/ContactList/ContactList';
+import { useState, useEffect } from 'react';
+import initialContacts from '../src/assets/initialContacts.json';
 const App = () => {
+  const [contacts, setcontacts] = useState(() => {
+    const SavedState = window.localStorage.getItem('contactsState');
+    return SavedState !== null ? JSON.parse(SavedState) : initialContacts;
+  });
+  const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    window.localStorage.setItem('contactsState', JSON.stringify(contacts));
+  }, [contacts]);
+
+  const handleChangeImput = e => {
+    setFilter(e.target.value);
+  };
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+  const addContact = newContact => {
+    setcontacts(prevContacts => {
+      return [...prevContacts, newContact];
+    });
+  };
+
+  const deleteContact = contactId => {
+    setcontacts(prevContacts => {
+      return prevContacts.filter(contact => contact.id !== contactId);
+    });
+  };
+
   return (
-    <>
-      <Profile
-        name={userData.username}
-        tag={userData.tag}
-        location={userData.location}
-        image={userData.avatar}
-        stats={userData.stats}
-      />
-      <FriendList friends={friends} />
-      <TransactionHistory items={transactions} />
-    </>
+    <div>
+      <h1>Phonebook</h1>
+      <ContactForm addContact={addContact} />
+      <SearchBox onChange={handleChangeImput} inpValue={filter} />
+      <ContactList contactList={filteredContacts} onDelete={deleteContact} />
+    </div>
   );
 };
 
