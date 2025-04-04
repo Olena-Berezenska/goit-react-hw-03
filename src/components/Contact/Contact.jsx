@@ -2,6 +2,7 @@ import { FaUser, FaPhone } from 'react-icons/fa';
 import s from './Contact.module.css';
 
 const Contact = ({ contactdata, onDelete }) => {
+  console.log(contactdata);
   return (
     <li className={s.contactBox}>
       <div className={s.contactInfo}>

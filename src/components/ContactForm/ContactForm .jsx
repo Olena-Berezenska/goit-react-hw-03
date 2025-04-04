@@ -7,7 +7,11 @@ import styles from './ContactForm.module.css';
 
 const ContactForm = ({ addContact }) => {
   const handlesubmit = (values, actions) => {
-    addContact(values);
+    const newContact = {
+      ...values,
+      id: nanoid(),
+    };
+    addContact(newContact);
     actions.resetForm();
   };
   const validation = Yup.object().shape({
@@ -27,7 +31,7 @@ const ContactForm = ({ addContact }) => {
         initialValues={{
           name: '',
           number: '',
-          id: nanoid(),
+          id: '',
         }}
         validationSchema={validation}
         onSubmit={handlesubmit}
